@@ -1,0 +1,33 @@
+id: rule-2024-001
+name: Suspicious PowerShell Execution with Encoded Commands
+description: Detects PowerShell execution with encoded commands that may indicate malicious activity
+author: Security Team
+created: 2024-01-15
+updated: 2024-10-19
+severity: high
+type: query
+domain: endpoint
+language: kuery
+tactics:
+  - execution
+  - defense_evasion
+techniques:
+  - T1059.001
+  - T1027
+os:
+  - windows
+data_sources:
+  - process
+  - command_line
+use_cases:
+  - threat_detection
+  - malware_detection
+enabled: true
+query: |
+  process where event.type == "start" and
+  process.name : ("powershell.exe", "pwsh.exe") and
+  process.command_line : ("*-encodedcommand*", "*-enc*", "*-e *")
+false_positives:
+  - Legitimate administrative scripts
+  - Software deployment tools
+risk_score: 73
